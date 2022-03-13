@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/XDAxis">
+        <file>Resource/arrow.fs</file>
+        <file>Resource/arrow.vs</file>
+        <file>Resource/text.fs</file>
+        <file>Resource/text.vs</file>
+    </qresource>
+</RCC>
