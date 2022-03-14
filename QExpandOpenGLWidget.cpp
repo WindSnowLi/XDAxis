@@ -49,19 +49,19 @@ void QExpandOpenGLWidget::resizeGL(int w, int h) {
 
 void QExpandOpenGLWidget::keyPressEvent(QKeyEvent* event) {
 	float cameraSpeed = 0.2f;
-	if (event->key() == Qt::Key_Left) {
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	}
-	else if (event->key() == Qt::Key_Right) {
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-	}
-	else if (event->key() == Qt::Key_Up) {
-		cameraPos += cameraSpeed * cameraFront;
+	if (event->key() == Qt::Key_Up) {
+		cameraDist -= cameraSpeed;
+		cameraDist <= 0.2;
+		cameraDist = 0.2;
 	}
 	else if (event->key() == Qt::Key_Down) {
-		cameraPos -= cameraSpeed * cameraFront;
+		cameraDist += cameraSpeed;
 	}
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	float camX = sin(m_yaw) * cameraDist;
+	float camZ = cos(m_yaw) * cameraDist;
+	float camY = sin(m_pitch) * cameraDist;
+
+	view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 }
 
 void QExpandOpenGLWidget::wheelEvent(QWheelEvent* event) {
@@ -81,20 +81,27 @@ void QExpandOpenGLWidget::mouseMoveEvent(QMouseEvent* event) {
 		float xoffset = event->x() - m_point.x();
 		float yoffset = event->y() - m_point.y(); // 注意这里是相反的，因为y坐标是从底部往顶部依次增大的
 
-		float sensitivity = 0.05f;
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
-		m_yaw -= xoffset;
+		float xSensitivity = 0.03f, ySensitivity = 0.03f;
+		xoffset *= xSensitivity;
+		yoffset *= ySensitivity;
+		m_yaw += xoffset;
 		m_pitch += yoffset;
-		if (m_pitch > 89.0f)
-			m_pitch = 89.0f;
-		if (m_pitch < -89.0f)
-			m_pitch = -89.0f;
-		glm::vec3 front;
-		front.x = cos(glm::radians(m_pitch)) * cos(glm::radians(m_yaw));
-		front.y = sin(glm::radians(m_pitch));
-		front.z = cos(glm::radians(m_pitch)) * sin(glm::radians(m_yaw));
-		cameraFront = glm::normalize(front);
+		if (m_pitch > 360.0) {
+			m_pitch -= 360.f;
+		}
+		if (m_yaw > 360.0) {
+			m_yaw -= 360.f;
+		}
+
+		float camX = sin(m_yaw) * cameraDist;
+		float camZ = cos(m_yaw) * cameraDist;
+		float camY = sin(m_pitch) * cameraDist;
+		qDebug() << m_yaw << "\t" << m_pitch;
+		qDebug() << camX << "\t" << camY << "\t" << camZ << "\n";
+
+		view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+
+		//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	}
 	m_point = event->pos();
 	event->ignore();
@@ -676,10 +683,13 @@ void QExpandOpenGLWidget::loadText()
 }
 
 
-void QExpandOpenGLWidget::renderText(std::string text)
+void QExpandOpenGLWidget::renderText(std::string text, glm::mat4 projection, glm::mat4 view, glm::mat4 model)
 {
 	GLfloat x = 0.0f, y = 0.0f;
 	textShader->use();
+	textShader->setMat4("view", view);
+	textShader->setMat4("projection", projection);
+	textShader->setMat4("model", model);
 	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(textVAO);
 	// 遍历文本中所有的字符

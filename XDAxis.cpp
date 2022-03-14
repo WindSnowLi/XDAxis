@@ -97,7 +97,6 @@ void XDAxis::build3Axis()
 	ss->use();
 	static float trasnCount = 0;
 	trasnCount += 0.05f;
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	ss->setMat4("view", view);
 	ss->setMat4("projection", projection);
 	glm::mat4 model = glm::mat4(1.0f);
@@ -121,7 +120,7 @@ void XDAxis::build3Axis()
 
 	textShader->use();
 	textShader->setVec3("textColor", glm::vec3(255, 0, 0));
-	renderText("+X");
+	renderText("X", projection, view, glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(vertices[3]+0.1, vertices[4], vertices[5])), glm::vec3(0.05f, 0.05f, 0.05f)));
 
 	ss->use();
 	ss->setMat4("model", model = glm::mat4(1.0f));

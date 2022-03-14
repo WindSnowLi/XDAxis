@@ -36,14 +36,14 @@ public:
 protected:
 	// 相机位置
 	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 2.0f);
-	// 相机前进向量
-	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	// 相机距离
+	float cameraDist = 2.0f;
 	// 相机上向量
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	// 投影矩阵
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)this->frameGeometry().width() / this->frameGeometry().height(), 0.1f, 100.0f);
 	// 观察矩阵
-	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 view = glm::lookAt(cameraPos, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));;
 	// 上一次鼠标点击的位置
 	QPoint m_point;
 	// 是否是鼠标第一次点击
@@ -53,7 +53,7 @@ protected:
 	// 偏移角度,俯仰角，偏航角，滑轮偏移
 	float m_pitch = 0.0f, m_yaw = -90.0f, m_fov = 45.0f;
 	// 渲染字体
-	void renderText(std::string text);
+	void renderText(std::string text, glm::mat4 projection, glm::mat4 view, glm::mat4 model);
 	GLuint textVAO{}, textVBO{};
 	std::map<GLchar, Character> Characters;
 	std::shared_ptr<Shader> textShader = nullptr;
