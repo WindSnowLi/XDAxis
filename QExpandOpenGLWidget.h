@@ -50,8 +50,8 @@ protected:
 	bool m_firstClick = true;
 	// Êó±ê×ó¼üÊÇ·ñ°´ÏÂ
 	bool m_leftMouseButton = false;
-	// Æ«ÒÆ½Ç¶È,¸©Ñö½Ç£¬Æ«º½½Ç£¬»¬ÂÖÆ«ÒÆ
-	float m_pitch = 0.0f, m_yaw = -90.0f, m_fov = 45.0f;
+	// Æ«ÒÆ½Ç¶È
+	float m_yt = 0.0f, m_xt = -0.0f, m_fov = 45.0f;
 	// äÖÈ¾×ÖÌå
 	void renderText(std::string text, glm::mat4 projection, glm::mat4 view, glm::mat4 model);
 	GLuint textVAO{}, textVBO{};

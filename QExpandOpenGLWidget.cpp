@@ -57,9 +57,9 @@ void QExpandOpenGLWidget::keyPressEvent(QKeyEvent* event) {
 	else if (event->key() == Qt::Key_Down) {
 		cameraDist += cameraSpeed;
 	}
-	float camX = sin(m_yaw) * cameraDist;
-	float camZ = cos(m_yaw) * cameraDist;
-	float camY = sin(m_pitch) * cameraDist;
+	float camX = sin(m_xt) * cameraDist;
+	float camZ = cos(m_xt) * cameraDist;
+	float camY = sin(m_yt) * cameraDist;
 
 	view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 }
@@ -70,7 +70,7 @@ void QExpandOpenGLWidget::wheelEvent(QWheelEvent* event) {
 	qDebug() << m_fov;
 	if (m_fov <= 1.0f)
 		m_fov = 1.0f;
-	if (m_fov >= 45.0f)
+	if (m_fov >= 90.0f)
 		m_fov = 45.0f;
 	projection = glm::perspective(glm::radians(m_fov), (float)this->frameGeometry().width() / this->frameGeometry().height(), 0.1f, 100.0f);
 }
@@ -84,22 +84,22 @@ void QExpandOpenGLWidget::mouseMoveEvent(QMouseEvent* event) {
 		float xSensitivity = 0.03f, ySensitivity = 0.03f;
 		xoffset *= xSensitivity;
 		yoffset *= ySensitivity;
-		m_yaw += xoffset;
-		m_pitch += yoffset;
-		if (m_pitch > 360.0) {
-			m_pitch -= 360.f;
+		m_xt += xoffset;
+		m_yt += yoffset;
+		if (m_yt > 360.0) {
+			m_yt -= 360.f;
 		}
-		if (m_yaw > 360.0) {
-			m_yaw -= 360.f;
+		if (m_xt > 360.0) {
+			m_xt -= 360.f;
 		}
 
-		float camX = sin(m_yaw) * cameraDist;
-		float camZ = cos(m_yaw) * cameraDist;
-		float camY = sin(m_pitch) * cameraDist;
-		qDebug() << m_yaw << "\t" << m_pitch;
-		qDebug() << camX << "\t" << camY << "\t" << camZ << "\n";
+		cameraPos.x = sin(m_xt) * cameraDist;
+		cameraPos.z = cos(m_xt) * cameraDist;
+		cameraPos.y = sin(m_yt) * cameraDist;
+		qDebug() << m_xt << "\t" << m_yt;
+		qDebug() << cameraPos.x << "\t" << cameraPos.y << "\t" << cameraPos.z << "\n";
 
-		view = glm::lookAt(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+		view = glm::lookAt(cameraPos, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 
 		//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	}

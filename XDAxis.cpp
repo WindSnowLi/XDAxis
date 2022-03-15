@@ -106,9 +106,7 @@ void XDAxis::build3Axis()
 	ss->setMat4("model", model = glm::mat4(1.0f));
 	ss->setVec3("ourColor", glm::vec3(255, 0, 0));
 	glBegin(GL_LINES);
-	glVertex3f(vertices[0], vertices[1], vertices[2]);
 	glVertex3f(vertices[3], vertices[4], vertices[5]);
-	glVertex3f(vertices[0], vertices[1], vertices[2]);
 	glVertex3f(-vertices[3], -vertices[4], -vertices[5]);
 	glEnd();
 	model = glm::translate(model, glm::vec3(vertices[3], vertices[4], vertices[5]));
@@ -120,15 +118,13 @@ void XDAxis::build3Axis()
 
 	textShader->use();
 	textShader->setVec3("textColor", glm::vec3(255, 0, 0));
-	renderText("X", projection, view, glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(vertices[3]+0.1, vertices[4], vertices[5])), glm::vec3(0.05f, 0.05f, 0.05f)));
+	renderText("X", projection, view, glm::scale(glm::translate(glm::mat4(1.0f), glm::vec3(vertices[3] + 0.1, vertices[4], vertices[5])), glm::vec3(0.05f, 0.05f, 0.05f)));
 
 	ss->use();
 	ss->setMat4("model", model = glm::mat4(1.0f));
 	ss->setVec3("ourColor", glm::vec3(0, 255, 0));
 	glBegin(GL_LINES);
-	glVertex3f(vertices[0], vertices[1], vertices[2]);
 	glVertex3f(vertices[6], vertices[7], vertices[8]);
-	glVertex3f(vertices[0], vertices[1], vertices[2]);
 	glVertex3f(-vertices[6], -vertices[7], -vertices[8]);
 	glEnd();
 	model = glm::translate(model, glm::vec3(vertices[6], vertices[7], vertices[8]));
@@ -137,14 +133,19 @@ void XDAxis::build3Axis()
 	glBindVertexArray(arrowVAO);
 	glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
 
+	textShader->use();
+	textShader->setVec3("textColor", glm::vec3(0, 255, 0));
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(vertices[4], vertices[5] + 0.6, vertices[6]));
+	model = glm::rotate(model, glm::radians(180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	renderText("Y", projection, view, glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f)));
+
 
 	ss->use();
 	ss->setVec3("ourColor", glm::vec3(0, 0, 255));
 	ss->setMat4("model", model = glm::mat4(1.0f));
 	glBegin(GL_LINES);
-	glVertex3f(vertices[0], vertices[1], vertices[2]);
 	glVertex3f(vertices[9], vertices[10], vertices[11]);
-	glVertex3f(vertices[0], vertices[1], vertices[2]);
 	glVertex3f(-vertices[9], -vertices[10], -vertices[11]);
 	glEnd();
 	model = glm::translate(model, glm::vec3(vertices[9], vertices[10], vertices[11]));
@@ -153,6 +154,13 @@ void XDAxis::build3Axis()
 	ss->setMat4("model", model);
 	glBindVertexArray(arrowVAO);
 	glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+
+	textShader->use();
+	textShader->setVec3("textColor", glm::vec3(0, 255, 0));
+	model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(vertices[9], vertices[10], vertices[11] + 0.1));
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	renderText("Z", projection, view, glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f)));
 
 	glFlush();
 }
